@@ -301,6 +301,27 @@ export const constantRouterMap = [
       }
     ]
   },
+  {
+    path: '/ums',
+    component: Layout,
+    redirect: '/ums/admin',
+    name: 'ums',
+    meta: {
+      title: '权限',
+      icon: 'sms'
+    },
+    children: [
+      {
+        path: 'admin',
+        name: 'admin',
+        component: () => import('@/views/ums/admin/index'),
+        meta: {
+          title: '后台用户列表',
+          icon: 'sms-flash'
+        }
+      }
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ]
 
@@ -309,4 +330,3 @@ export default new Router({
   scrollBehavior: () => ({y: 0}),
   routes: constantRouterMap
 })
-

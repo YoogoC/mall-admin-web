@@ -4,13 +4,18 @@
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar">
+        <img class="user-avatar" :src="user.icon">
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
             首页
+          </el-dropdown-item>
+        </router-link>
+        <router-link class="inlineBlock" to="/">
+          <el-dropdown-item>
+            {{user.username}}
           </el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
@@ -31,6 +36,14 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data(){
+    return {
+      user: {}
+    }
+  },
+  created(){
+    this.getInfo();
+  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -44,6 +57,11 @@ export default {
     logout() {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
+      })
+    },
+    getInfo() {
+      this.$store.dispatch('GetInfo').then((result) => {
+        this.user = result.data
       })
     }
   }
@@ -91,4 +109,3 @@ export default {
   }
 }
 </style>
-
