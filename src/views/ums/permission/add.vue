@@ -2,7 +2,7 @@
   <permission-detail :is-edit='false'></permission-detail>
 </template>
 <script>
-  import PermissionDetail from './components/Permission'
+  import PermissionDetail from './components/PermissionDetail'
   export default {
     name: 'addPermission',
     components: { PermissionDetail }

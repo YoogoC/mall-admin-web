@@ -201,8 +201,8 @@
         this.listQuery.pageNum = 1;
         this.getList();
       },
-      handleAddUser() {
-
+      handleAddPermission() {
+        this.$router.push({path:'/ums/addPermission'});
       },
       handleBatchOperate() {
         if(this.operateType==null){

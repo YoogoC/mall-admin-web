@@ -1,62 +1,63 @@
 <template> 
   <el-card class="form-container" shadow="never">
-    <el-form :model="brand" :rules="rules" ref="brandFrom" label-width="150px">
-      <el-form-item label="品牌名称：" prop="name">
-        <el-input v-model="brand.name"></el-input>
+    <el-form :model="permission" :rules="rules" ref="permissionFrom" label-width="150px">
+      <el-form-item label="名称:" prop="name">
+        <el-input v-model="permission.name"></el-input>
       </el-form-item>
-      <el-form-item label="品牌首字母：">
-        <el-input v-model="brand.firstLetter"></el-input>
+      <el-form-item label="父级资源:">
+        <el-cascader
+          v-model="permission.pid"
+          :options="permissionOptions"
+          clearable
+          :props="{checkStrictly: true}"></el-cascader>
       </el-form-item>
-      <el-form-item label="品牌LOGO：" prop="logo">
-        <single-upload v-model="brand.logo"></single-upload>
+      <el-form-item label="权限值:">
+        <el-input v-model="permission.value"></el-input>
       </el-form-item>
-      <el-form-item label="品牌专区大图：">
-        <single-upload v-model="brand.bigPic"></single-upload>
+      <el-form-item label="图标:">
+        <el-input v-model="permission.icon"></el-input>
       </el-form-item>
-      <el-form-item label="品牌故事：">
-        <el-input
-          placeholder="请输入内容"
-          type="textarea"
-          v-model="brand.brandStory"
-          :autosize="true"></el-input>
-      </el-form-item>
-      <el-form-item label="排序：" prop="sort">
-        <el-input v-model.number="brand.sort"></el-input>
-      </el-form-item>
-      <el-form-item label="是否显示：">
-        <el-radio-group v-model="brand.showStatus">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+      <el-form-item label="权限类型:">
+        <el-radio-group v-model="permission.type">
+          <el-radio :label="0">目录</el-radio>
+          <el-radio :label="1">菜单</el-radio>
+          <el-radio :label="2">按钮</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="品牌制造商：">
-        <el-radio-group v-model="brand.factoryStatus">
+      <el-form-item label="前端资源路径:">
+        <el-input v-model="permission.uri"></el-input>
+      </el-form-item>
+      <el-form-item label="排序:">
+        <el-input v-model="permission.sort" type="number"></el-input>
+      </el-form-item>
+      <el-form-item label="启用状态:" prop="sort">
+        <el-radio-group v-model="permission.status">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('brandFrom')">提交</el-button>
-        <el-button v-if="!isEdit" @click="resetForm('brandFrom')">重置</el-button>
+        <el-button type="primary" @click="onSubmit('permissionFrom')">提交</el-button>
+        <el-button v-if="!isEdit" @click="resetForm('permissionFrom')">重置</el-button>
       </el-form-item>
     </el-form>
   </el-card>
 </template>
 <script>
-  import {createBrand, getBrand, updateBrand} from '@/api/brand'
+  import {createPermission, getPermission, updatePermission, fetchTreeList} from '@/api/permission'
   import SingleUpload from '@/components/Upload/singleUpload'
-  const defaultBrand={
-    bigPic: '',
-    brandStory: '',
-    factoryStatus: 0,
-    firstLetter: '',
-    logo: '',
+  const defaultPermission={
     name: '',
-    showStatus: 0,
+    value: '',
+    icon: '',
+    type: '',
+    uri: '',
+    pid: 0,
+    status: 0,
     sort: 0
   };
   export default {
-    name: 'BrandDetail',
+    name: 'PermissionDetail',
     components:{SingleUpload},
     props: {
       isEdit: {
@@ -66,10 +67,10 @@
     },
     data() {
       return {
-        brand:Object.assign({}, defaultBrand),
+        permission:Object.assign({}, defaultPermission),
         rules: {
           name: [
-            {required: true, message: '请输入品牌名称', trigger: 'blur'},
+            {required: true, message: '请输入权限名称', trigger: 'blur'},
             {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
           ],
           logo: [
@@ -78,16 +79,18 @@
           sort: [
             {type: 'number', message: '排序必须为数字'}
           ],
-        }
+        },
+        permissionOptions: []
       }
     },
     created() {
+      this.getPermissionTreeList()
       if (this.isEdit) {
-        getBrand(this.$route.query.id).then(response => {
-          this.brand = response.data;
+        getPermission(this.$route.query.id).then(response => {
+          this.permission = response.data;
         });
       }else{
-        this.brand = Object.assign({},defaultBrand);
+        this.permission = Object.assign({},defaultPermission);
       }
     },
     methods: {
@@ -100,7 +103,7 @@
               type: 'warning'
             }).then(() => {
               if (this.isEdit) {
-                updateBrand(this.$route.query.id, this.brand).then(response => {
+                updatePermission(this.$route.query.id, this.permission).then(response => {
                   this.$refs[formName].resetFields();
                   this.$message({
                     message: '修改成功',
@@ -110,9 +113,11 @@
                   this.$router.back();
                 });
               } else {
-                createBrand(this.brand).then(response => {
+                console.log(this.permission)
+                this.permission.pid = this.permission.pid[0]
+                createPermission(this.permission).then(response => {
                   this.$refs[formName].resetFields();
-                  this.brand = Object.assign({},defaultBrand);
+                  this.permission = Object.assign({},defaultPermission);
                   this.$message({
                     message: '提交成功',
                     type: 'success',
@@ -134,12 +139,21 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
-        this.brand = Object.assign({},defaultBrand);
+        this.permission = Object.assign({},defaultPermission);
+      },
+      getPermissionTreeList() {
+        fetchTreeList().then(response => {
+          var data = response.data
+          this.permissionOptions = [{value: 0, label: '系统', children: this.formatPermissionTreeList(data)}]
+        });
+      },
+      formatPermissionTreeList(nodes) {
+        if (nodes.length > 0) {
+          return nodes.map((x) => ({value: x.id, label: x.name, children: this.formatPermissionTreeList(x.children)}))
+        }
       }
     }
   }
 </script>
 <style>
 </style>
-
-

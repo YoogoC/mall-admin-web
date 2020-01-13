@@ -328,6 +328,15 @@ export const constantRouterMap = [
           title: '权限',
           icon: 'sms-flash'
         }
+      },
+      {
+        path: 'addPermission',
+        name: 'addPermission',
+        component: () => import('@/views/ums/permission/add'),
+        meta: {
+          title: '添加权限',
+          icon: 'sms-flash'
+        }
       }
     ]
   },
