@@ -308,7 +308,7 @@ export const constantRouterMap = [
     name: 'ums',
     meta: {
       title: '权限',
-      icon: 'sms'
+      icon: 'order-setting'
     },
     children: [
       {
@@ -316,7 +316,16 @@ export const constantRouterMap = [
         name: 'admin',
         component: () => import('@/views/ums/admin/index'),
         meta: {
-          title: '后台用户列表',
+          title: '用户',
+          icon: 'sms-flash'
+        }
+      },
+      {
+        path: 'permission',
+        name: 'permission',
+        component: () => import('@/views/ums/permission/index'),
+        meta: {
+          title: '权限',
           icon: 'sms-flash'
         }
       }
