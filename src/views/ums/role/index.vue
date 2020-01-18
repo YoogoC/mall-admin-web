@@ -21,7 +21,7 @@
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" size="small" label-width="140px">
           <el-form-item label="名称">
-            <el-input style="width: 203px" v-model="listQuery.name" placeholder="权限名称"></el-input>
+            <el-input style="width: 203px" v-model="listQuery.name" placeholder="角色名称"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -31,7 +31,7 @@
       <span>数据列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddPermission()"
+        @click="handleAddRole()"
         size="mini">
         添加
       </el-button>
@@ -41,27 +41,16 @@
         :data="list"
         style="width: 100%;margin-bottom: 20px;"
         row-key="id"
-        border
-        default-expand-all
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        border>
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column label="名称" width="160">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="权限类型" align="center">
-          <template slot-scope="scope">{{scope.row.type | formatType}}</template>
+        <el-table-column label="描述" align="center">
+          <template slot-scope="scope">{{scope.row.description}}</template>
         </el-table-column>
-        <el-table-column label="编号" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
-        </el-table-column>
-        <el-table-column label="权限值" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.value}}</template>
-        </el-table-column>
-        <el-table-column label="图标" align="center">
-          <template slot-scope="scope">{{scope.row.icon}}</template>
-        </el-table-column>
-        <el-table-column label="前端资源路径" width="120" align="center">
-          <template slot-scope="scope">{{scope.row.uri}}</template>
+        <el-table-column label="后台用户数量" align="center">
+          <template slot-scope="scope">{{scope.row.adminCount}}</template>
         </el-table-column>
         <el-table-column label="排序" width="120" align="center">
           <template slot-scope="scope">{{scope.row.sort}}</template>
@@ -84,7 +73,7 @@
             <p>
               <el-button
                 size="mini"
-                @click="handleUpdateUser(scope.$index, scope.row)">编辑
+                @click="handleUpdateRole(scope.$index, scope.row)">编辑
               </el-button>
             </p>
             <p>
@@ -138,8 +127,8 @@
 </template>
 <script>
   import {
-    fetchTreeList
-  } from '@/api/permission'
+    fetchList
+  } from '@/api/role'
   import {formatDate} from '@/utils/date';
 
   const defaultListQuery = {
@@ -149,16 +138,15 @@
     status: null,
   };
   export default {
-    name: "permissionList",
     data() {
       return {
         operates: [
           {
-            label: "权限启用",
+            label: "角色启用",
             value: "statusOn"
           },
           {
-            label: "权限禁用",
+            label: "角色禁用",
             value: "statusOff"
           }
         ],
@@ -191,7 +179,7 @@
     methods: {
       getList() {
         this.listLoading = true;
-        fetchTreeList(this.listQuery).then(response => {
+        fetchList(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data;
           this.total = 0;
@@ -201,8 +189,8 @@
         this.listQuery.pageNum = 1;
         this.getList();
       },
-      handleAddPermission() {
-        this.$router.push({path:'/ums/addPermission'});
+      handleAddRole() {
+        this.$router.push({path:'/ums/addRole'});
       },
       handleBatchOperate() {
         if(this.operateType==null){
@@ -215,7 +203,7 @@
         }
         if(this.multipleSelection==null||this.multipleSelection.length<1){
           this.$message({
-            message: '请选择要操作的权限',
+            message: '请选择要操作的角色',
             type: 'warning',
             duration: 1000
           });
@@ -292,8 +280,8 @@
           this.updateDeleteStatus(1,ids);
         });
       },
-      handleUpdateUser(index,row){
-        this.$router.push({path:'/pms/updateUser',query:{id:row.id}});
+      handleUpdateRole(index,row){
+        this.$router.push({path:'/pms/updateRole',query:{id:row.id}});
       },
       handleShowLog(index,row){
         console.log("handleShowLog",row);

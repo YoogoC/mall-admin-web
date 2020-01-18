@@ -3,7 +3,6 @@
     <el-card class="login-form-layout">
       <el-form autoComplete="on"
                :model="loginForm"
-               :rules="loginRules"
                ref="loginForm"
                label-position="left">
         <div style="text-align: center">

@@ -321,6 +321,15 @@ export const constantRouterMap = [
         }
       },
       {
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/ums/role/index'),
+        meta: {
+          title: '角色',
+          icon: 'sms-flash'
+        }
+      },
+      {
         path: 'permission',
         name: 'permission',
         component: () => import('@/views/ums/permission/index'),
@@ -336,7 +345,8 @@ export const constantRouterMap = [
         meta: {
           title: '添加权限',
           icon: 'sms-flash'
-        }
+        },
+        hidden: true
       }
     ]
   },

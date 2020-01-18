@@ -14,3 +14,40 @@ export function updateStatus(params) {
     params: params
   })
 }
+
+export function fetchPermissionList(userId) {
+  return request({
+    url: '/admin/permission/'+userId,
+    method: 'get'
+  })
+}
+
+export function updatePermissions(params) {
+  return request({
+    url: '/admin/permission/update',
+    method: 'post',
+    params: params
+  })
+}
+
+export function resetPassword(userId) {
+  return request({
+    url: '/admin/resetPassword/' + userId,
+    method: 'post'
+  })
+}
+
+export function fetchRoleList(userId) {
+  return request({
+    url: '/admin/role/' + userId,
+    method: 'get'
+  })
+}
+
+export function updateRoleList(params) {
+  return request({
+    url: '/admin/role/update/',
+    method: 'post',
+    params: params
+  })
+}
